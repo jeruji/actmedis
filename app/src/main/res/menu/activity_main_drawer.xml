@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_pasien_list"
+            android:icon="@drawable/icon_list_pasien"
+            android:title="Pasien List" />
+        <item
+            android:id="@+id/nav_add_pasien"
+            android:icon="@drawable/icon_add"
+            android:title="Tambah Pasien" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/icon_about"
+            android:title="Tentang Aplikasi" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/icon_logout"
+            android:title="Logout" />
+
+    </group>
+
+
+</menu>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="marginTopHeader">20dp</dimen>
+    <dimen name="marginGeneral">30dp</dimen>
+    <dimen name="padding">16dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin_double">32dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="marginSmall">10dp</dimen>
+    <dimen name="margin_top_homebutton">70dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="label_size">20dp</dimen>
+</resources>

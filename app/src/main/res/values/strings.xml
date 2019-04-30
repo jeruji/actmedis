@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">actmedis</string>
+    <string name="btn_sign_in">SIGN IN</string>
+    <string name="disclimer">©2019 Persekutuan Pelayanan Kristen untuk Kesehatan di Indonesia.</string>
+    <string name="welcome"><u>Welcome in</u></string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="kabupaten_prompt">Pilih Kabupaten</string>
+    <string name="kecamatan_prompt">Pilih Kecamatan</string>
+    <string name="desa_prompt">Pilih Desa</string>
+    <string name="dusun_prompt">Pilih Dusun</string>
+    <string name="puskesmas_prompt">Pilih Puskesmas</string>
+    <string name="gender_prompt">Pilih Gender</string>
+    <string name="status_prompt">Pilih Status</string>
+    <string-array name="gender">
+        <item>Laki-Laki</item>
+        <item>Perempuan</item>
+    </string-array>
+    <string-array name="status">
+        <item>Menular</item>
+        <item>Tidak Menular</item>
+    </string-array>
+    <string name="file_provider_authority" translatable="false">id.or.pelkesi.actmedis.fileprovider</string>
+</resources>
