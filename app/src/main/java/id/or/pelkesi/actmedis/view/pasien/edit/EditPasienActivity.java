@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -81,6 +82,8 @@ public class EditPasienActivity extends AppCompatActivity implements EditPasienA
     EditText tanggalLahirEditText;
     @BindView(R.id.calendarTglLahir)
     ImageView calendarTglLahir;
+    @BindView(R.id.btnSubmitEditPasien)
+    Button submitEditPasien;
     @BindView(R.id.toolbar)
     Toolbar toolbarList;
 
@@ -290,31 +293,57 @@ public class EditPasienActivity extends AppCompatActivity implements EditPasienA
 
     @OnClick(R.id.btnSubmitEditPasien)
     public void submitEditData(){
-        PasienAndDetail pasienAndDetail = new PasienAndDetail();
-        pasienAndDetail.setNama(nameEditText.getText().toString());
-        pasienAndDetail.setTanggal_lahir(tanggalLahirEditText.getText().toString());
-        pasienAndDetail.setUmur(Integer.parseInt(umurEditText.getText().toString()));
-        pasienAndDetail.setTekanan_darah(tekananDarahEditText.getText().toString());
-        String editGender = "";
 
-        if(genderSpinner.getSelectedItemPosition()==0)
-            editGender = "Laki-Laki";
-        else
-            editGender = "Perempuan";
+        submitEditPasien.setClickable(false);
 
-        pasienAndDetail.setGender(editGender);
-        pasienAndDetail.setSuhu(suhuEditText.getText().toString());
-        pasienAndDetail.setTb_bb(tbbbEditText.getText().toString());
-        pasienAndDetail.setKeluhan(keluhanEditText.getText().toString());
-        pasienAndDetail.setDiagnosa(diagnosaEditText.getText().toString());
-        pasienAndDetail.setStatus_penyakit(statusEditText.getText().toString());
-        pasienAndDetail.setTindakan(tindakanEditText.getText().toString());
-        pasienAndDetail.setGds(gdsEditText.getText().toString());
-        pasienAndDetail.setUric_acid(uricAcidEditText.getText().toString());
-        pasienAndDetail.setKolesterol(cholesterolEditText.getText().toString());
-        pasienAndDetail.setRujukan(rujukanEditText.getText().toString());
+        boolean validate = true;
 
-        pasienPresenter.submitEditData(pasienAndDetail);
+        if(nameEditText.getText().toString().equals("")||
+                tanggalLahirEditText.getText().toString().equals("")||
+                umurEditText.getText().toString().equals("")||
+                tekananDarahEditText.getText().toString().equals("")||
+                suhuEditText.getText().toString().equals("")||
+                tbbbEditText.getText().toString().equals("")||
+                keluhanEditText.getText().toString().equals("")||
+                diagnosaEditText.getText().toString().equals("")||
+                statusEditText.getText().toString().equals("")||
+                tindakanEditText.getText().toString().equals("")||
+                gdsEditText.getText().toString().equals("")||
+                uricAcidEditText.getText().toString().equals("")||
+                cholesterolEditText.getText().toString().equals("")||
+                rujukanEditText.getText().toString().equals(""))
+            validate = false;
+
+        if(validate) {
+            PasienAndDetail pasienAndDetail = new PasienAndDetail();
+            pasienAndDetail.setNama(nameEditText.getText().toString());
+            pasienAndDetail.setTanggal_lahir(tanggalLahirEditText.getText().toString());
+            pasienAndDetail.setUmur(Integer.parseInt(umurEditText.getText().toString()));
+            pasienAndDetail.setTekanan_darah(tekananDarahEditText.getText().toString());
+            String editGender = "";
+
+            if (genderSpinner.getSelectedItemPosition() == 0)
+                editGender = "Laki-Laki";
+            else
+                editGender = "Perempuan";
+
+            pasienAndDetail.setGender(editGender);
+            pasienAndDetail.setSuhu(suhuEditText.getText().toString());
+            pasienAndDetail.setTb_bb(tbbbEditText.getText().toString());
+            pasienAndDetail.setKeluhan(keluhanEditText.getText().toString());
+            pasienAndDetail.setDiagnosa(diagnosaEditText.getText().toString());
+            pasienAndDetail.setStatus_penyakit(statusEditText.getText().toString());
+            pasienAndDetail.setTindakan(tindakanEditText.getText().toString());
+            pasienAndDetail.setGds(gdsEditText.getText().toString());
+            pasienAndDetail.setUric_acid(uricAcidEditText.getText().toString());
+            pasienAndDetail.setKolesterol(cholesterolEditText.getText().toString());
+            pasienAndDetail.setRujukan(rujukanEditText.getText().toString());
+
+            pasienPresenter.submitEditData(pasienAndDetail);
+        }
+        else{
+            showError("Please Check Your Data Before Submit");
+        }
     }
 
     @Override

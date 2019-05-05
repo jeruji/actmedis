@@ -53,9 +53,8 @@ public class NameAutoCompleteAdapter extends ArrayAdapter<String> implements Fil
     public Filter getFilter() {
         return new Filter() {
             @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                final FilterResults results = new FilterResults();
-                final List<Patient> suggestions = new ArrayList<>();
+            protected FilterResults performFiltering(final CharSequence constraint) {
+
                 if (constraint != null) {
                     String strSearch = constraint.toString();
                     int strLength = strSearch.length();
@@ -66,16 +65,20 @@ public class NameAutoCompleteAdapter extends ArrayAdapter<String> implements Fil
                     db.collection("data-pasien").whereGreaterThanOrEqualTo("nama", strSearch)
                             .whereLessThan("nama",searchCompare)
                             .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                         FilterResults results = new FilterResults();
+
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             List<Patient> patientList = queryDocumentSnapshots.toObjects(Patient.class);
+                            List<String> patientString = new ArrayList<>();
                             for(int index = 0; index<patientList.size(); index++){
                                 patientList.get(index).setId(queryDocumentSnapshots.getDocuments().get(index).getId());
+                                patientString.add(patientList.get(index).getNama());
                             }
-                            suggestions.addAll(patientList);
-                            results.values = suggestions;
-                            results.count = suggestions.size();
-                            mData = suggestions;
+                            mData = patientList;
+                            results.values = patientString;
+                            results.count = patientString.size();
+                            publishResults(constraint,results);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -95,7 +98,7 @@ public class NameAutoCompleteAdapter extends ArrayAdapter<String> implements Fil
                     });
                 }
 
-                return results;
+                return null;
             }
 
             @Override

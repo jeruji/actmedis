@@ -8,15 +8,20 @@
     android:layout_marginTop="5dp"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bgSpinner">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/viewNama"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/labelNama"
@@ -41,19 +46,25 @@
                 android:text="21-12-2016"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
-        </RelativeLayout>
 
-        <RelativeLayout
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/viewGender"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/viewNama">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/labelGender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:text="Gender"
@@ -64,26 +75,31 @@
                 android:id="@+id/genderPasien"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@+id/labelGender"
                 android:layout_marginRight="5dp"
                 android:text="new"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
 
-        </RelativeLayout>
+            </RelativeLayout>
 
-        <RelativeLayout
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/viewUmur"
-            android:layout_width="80dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/viewGender">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/labelUmur"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:text="Umur"
@@ -94,335 +110,86 @@
                 android:id="@+id/umurPasien"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_below="@+id/labelUmur"
                 android:layout_marginRight="5dp"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="11sp" />
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/viewTekananDarah"
-            android:layout_width="80dp"
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewTanggalLahir"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/viewUmur">
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
             <TextView
-                android:id="@+id/labelTekananDarah"
+                android:id="@+id/labelTanggalLahir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Tekanan Darah"
+                android:text="Tanggal Lahir"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/tekananDarahPasien"
+                android:id="@+id/tanggalLahirPasien"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelTekananDarah"
+                android:layout_below="@+id/labelTanggalLahir"
                 android:layout_marginRight="5dp"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="11sp" />
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/viewSuhu"
-            android:layout_width="80dp"
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewDateCreated"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewTekananDarah">
+            android:layout_toRightOf="@+id/viewTanggalLahir">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/labelSuhu"
+                android:id="@+id/labelDateCreated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Suhu"
+                android:text="Date Created"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
 
             <TextView
-                android:id="@+id/suhuPasien"
+                android:id="@+id/dateCreatedPasien"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelSuhu"
+                android:layout_below="@+id/labelDateCreated"
                 android:layout_marginRight="5dp"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="11sp" />
-        </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/viewTBBB"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewSuhu">
-
-            <TextView
-                android:id="@+id/labelTBBB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="TB/BB"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/tbbbPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelTBBB"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewKeluhan"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewTBBB">
-
-            <TextView
-                android:id="@+id/labelKeluhan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Keluhan"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/keluhanPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelKeluhan"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewDiagnosa"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewKeluhan">
-
-            <TextView
-                android:id="@+id/labelDiagnosa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Diagnosa"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/diagnosaPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelDiagnosa"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewStatus"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewDiagnosa">
-
-            <TextView
-                android:id="@+id/labelStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Status"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/statusPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelStatus"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewTindakan"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewStatus">
-
-            <TextView
-                android:id="@+id/labelTindakan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Tindakan"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/tindakanPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelTindakan"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewGDS"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewTindakan">
-
-            <TextView
-                android:id="@+id/labelGDS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="GDS"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/gdsPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelGDS"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewUricAcid"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewGDS">
-
-            <TextView
-                android:id="@+id/labelUricAcid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Uric Acid"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/uricAcidPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelUricAcid"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewCholesterol"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/viewUricAcid">
-
-            <TextView
-                android:id="@+id/labelCholesterol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Cholesterol"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/cholesterolPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelCholesterol"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/viewRujukan"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/viewCholesterol">
-
-            <TextView
-                android:id="@+id/labelRujukan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="Rujukan"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/rujukanPasien"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/labelRujukan"
-                android:layout_marginRight="5dp"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="11sp" />
-        </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

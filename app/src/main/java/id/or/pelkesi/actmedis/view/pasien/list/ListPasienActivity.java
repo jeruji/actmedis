@@ -97,7 +97,6 @@ public class ListPasienActivity extends AppCompatActivity implements ListPasienA
 
         showProgress(false);
         pasienAdapter.setCallback(this);
-        patientList = new ArrayList<>();
         mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setAdapter(pasienAdapter);
@@ -202,8 +201,14 @@ public class ListPasienActivity extends AppCompatActivity implements ListPasienA
 
     @OnItemSelected(R.id.spinnerKabupaten)
     public void kabupatenSpinnerItemSelected(Spinner spinner, int position){
-        if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")){
+        if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")&&
+                !textDate.getText().toString().equals("")){
             listPasienPresenter.getKecamatanList(spinner.getSelectedItem().toString());
+        }
+        else if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")&&
+                textDate.getText().toString().equals("")){
+            showError("Please Select Date");
+            spinner.setSelection(0);
         }
     }
 
@@ -265,6 +270,7 @@ public class ListPasienActivity extends AppCompatActivity implements ListPasienA
     @OnItemSelected(R.id.spinnerPuskesmas)
     public void puskesmasSpinnerItemSelected(Spinner spinner, int position){
         if(!spinner.getSelectedItem().toString().equals("-- Pilih Puskesmas --")){
+            patientList = new ArrayList<>();
             listPasienPresenter.getGroupingList(spinner.getSelectedItem().toString(),
                     dusunSpinner.getSelectedItem().toString(),
                     desaSpinner.getSelectedItem().toString(),

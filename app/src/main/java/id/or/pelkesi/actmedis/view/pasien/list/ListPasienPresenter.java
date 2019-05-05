@@ -102,6 +102,7 @@ public class ListPasienPresenter implements ListPasienActivityInterface.Presente
                     pasienAndDetail.setNama(patient.getNama());
                     pasienAndDetail.setUmur(patient.getUmur());
                     pasienAndDetail.setGender(patient.getGender());
+                    pasienAndDetail.setTanggal_lahir(patient.getTanggal_lahir());
                     pasienAndDetail.setFoto(patient.getFoto());
                     pasienAndDetail.setDatecreated(patient.getDatecreated());
                     pasienAndDetail.setDiagnosa(detailPasien.getDiagnosa());
@@ -148,7 +149,10 @@ public class ListPasienPresenter implements ListPasienActivityInterface.Presente
         User user = App.getInstance().getPrefManager().getUser();
         ArrayList<String> kabupatenList = new ArrayList<>();
         kabupatenList.add("-- Pilih Kabupaten --");
-        kabupatenList.add(user.getRegion());
+
+        for(int index = 0; index < user.getRegion().size(); index++){
+            kabupatenList.add(user.getRegion().get(index));
+        }
 
         view.constructKabupaten(kabupatenList);
     }

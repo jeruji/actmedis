@@ -106,8 +106,22 @@ public class DashboardActivity extends AppCompatActivity implements DashboardAct
     }
 
     @Override
+    @OnClick(R.id.aboutBtn)
     public void toAboutPage() {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setClassName(this, "id.or.pelkesi.actmedis.view.about.AboutActivity");
+        startActivity(intent);
+    }
 
+    @Override
+    public void toSearchPage() {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setClassName(this, "id.or.pelkesi.actmedis.view.pasien.search.SearchPasienActivity");
+        startActivity(intent);
     }
 
     @Override
@@ -123,6 +137,8 @@ public class DashboardActivity extends AppCompatActivity implements DashboardAct
             Intent intent = new Intent(this, DeleteTokenService.class);
             startService(intent);
             dashboardPresenter.signOutUser();
+        } else if (id == R.id.nav_pasien_search){
+            toSearchPage();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

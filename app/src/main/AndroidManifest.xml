@@ -29,14 +29,46 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.pasien.list.ListPasienActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.dashboard.DashboardActivity" />
+        </activity>
         <activity
             android:name=".view.pasien.edit.EditPasienActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.pasien.list.ListPasienActivity" />
+        </activity>
         <activity
             android:name=".view.pasien.add.AddPasienActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.dashboard.DashboardActivity" />
+        </activity>
+        <activity
+            android:name=".view.pasien.search.SearchPasienActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.dashboard.DashboardActivity" />
+        </activity>
+        <activity
+            android:name=".view.pasien.search.SearchResultActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.pasien.search.SearchPasienActivity" />
+        </activity>
+        <activity
+            android:name=".view.about.AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.dashboard.DashboardActivity" />
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

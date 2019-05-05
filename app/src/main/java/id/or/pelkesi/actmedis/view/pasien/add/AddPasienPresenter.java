@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -21,13 +22,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import id.or.pelkesi.actmedis.App;
-import id.or.pelkesi.actmedis.model.HarianGroup;
 import id.or.pelkesi.actmedis.model.Patient;
 import id.or.pelkesi.actmedis.model.User;
 
@@ -114,6 +115,7 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        setTotalDataPasien();
                         view.toListPatient();
                     }
                 })
@@ -125,13 +127,42 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 });
     }
 
+    public void setTotalDataPasien(){
+        db.collection("total_data_pasien").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                int current = 0;
+                String currentId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                current = Integer.parseInt(queryDocumentSnapshots.getDocuments().get(0).get("total").toString())+1;
+
+                Map<String, Object> totalPasienObj = new HashMap<>();
+                totalPasienObj.put("total", current);
+
+                db.collection("total_data_pasien").document(currentId).set(totalPasienObj)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                view.showError("Failed to Edit Total Patient");
+                            }
+                        });
+            }
+        });
+    }
+
     @Override
-    public void submitPatientData(final Map<String, Object> detailPasien, Map<String, Object> harianGroup){
+    public void submitPatientData(final Map<String, Object> detailPasien, final Map<String, Object> harianGroup){
         db.collection("laporan-harian-grouping")
                 .add(harianGroup)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        submitGroupingKabupaten(harianGroup);
                         submitPatientDataByDetailPatient(documentReference.getId(), detailPasien);
                     }
                 })
@@ -150,6 +181,7 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        setTotalDataPasien();
                         view.toListPatient();
                     }
                 })
@@ -188,6 +220,7 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        setTotalDataPasien();
                         view.toListPatient();
                     }
                 })
@@ -208,6 +241,7 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        submitGroupingKabupaten(harianGroup);
                         submitPatientData(documentReference.getId(), detailPasien, harianGroup);
                     }
                 })
@@ -215,6 +249,165 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         view.showError("Failed Submit Data");
+                    }
+                });
+    }
+
+    public void submitGroupingKabupaten(final Map<String, Object> harianGroup){
+
+        db.collection("kabupaten_grouping").whereEqualTo("nama", harianGroup.get("kabupaten"))
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                String kabupatenId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                Map<String, Object> kecamatanMap = new HashMap<>();
+                kecamatanMap.put("kabupaten_id", kabupatenId);
+                kecamatanMap.put("nama", harianGroup.get("kecamatan"));
+                submitGroupingKecamatan(harianGroup, kecamatanMap);
+            }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    view.showError("Failed Submit Data");
+                }
+            });
+
+    }
+
+    public void submitGroupingKecamatan(final Map<String, Object> harianGroup, final Map<String, Object> kecamatanGroup){
+
+        db.collection("kecamatan_grouping").whereEqualTo("kabupaten_id", kecamatanGroup.get("kabupaten_id"))
+                .whereEqualTo("nama", kecamatanGroup.get("nama")).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(queryDocumentSnapshots.isEmpty()){
+                            db.collection("kecamatan_grouping").add(kecamatanGroup)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            String kecamatanId = documentReference.getId();
+                                            Map<String, Object> desaMap = new HashMap<>();
+                                            desaMap.put("kecamatan_id", kecamatanId);
+                                            desaMap.put("nama", harianGroup.get("desa"));
+                                            submitGroupingDesa(harianGroup, desaMap);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            view.showError("Failed Submit Data");
+                                        }
+                                    });
+                        }
+                        else{
+                            String kecamatanId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            Map<String, Object> desaMap = new HashMap<>();
+                            desaMap.put("kecamatan_id", kecamatanId);
+                            desaMap.put("nama", harianGroup.get("desa"));
+                            submitGroupingDesa(harianGroup, desaMap);
+                        }
+                    }
+                });
+    }
+
+    public void submitGroupingDesa(final Map<String, Object> harianGroup, final Map<String, Object> desaGroup){
+
+        db.collection("desa_grouping").whereEqualTo("kecamatan_id", desaGroup.get("kecamatan_id"))
+                .whereEqualTo("nama", desaGroup.get("nama")).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(queryDocumentSnapshots.isEmpty()){
+                            db.collection("desa_grouping").add(desaGroup)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            String desaId = documentReference.getId();
+                                            Map<String, Object> dusunMap = new HashMap<>();
+                                            dusunMap.put("desa_id", desaId);
+                                            dusunMap.put("nama", harianGroup.get("dusun"));
+                                            submitGroupingDusun(harianGroup, dusunMap);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            view.showError("Failed Submit Data");
+                                        }
+                                    });
+                        }
+                        else{
+                            String desaId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            Map<String, Object> dusunMap = new HashMap<>();
+                            dusunMap.put("desa_id", desaId);
+                            dusunMap.put("nama", harianGroup.get("dusun"));
+                            submitGroupingDusun(harianGroup, dusunMap);
+                        }
+                    }
+                });
+    }
+
+    public void submitGroupingDusun(final Map<String, Object> harianGroup, final Map<String, Object> dusunGroup){
+
+        db.collection("dusun_grouping").whereEqualTo("desa_id", dusunGroup.get("desa_id"))
+                .whereEqualTo("nama", dusunGroup.get("nama")).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(queryDocumentSnapshots.isEmpty()){
+                            db.collection("dusun_grouping").add(dusunGroup)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            String dusunId = documentReference.getId();
+                                            Map<String, Object> puskesmasMap = new HashMap<>();
+                                            puskesmasMap.put("dusun_id", dusunId);
+                                            puskesmasMap.put("nama", harianGroup.get("puskesmas"));
+                                            submitGroupingPuskesmas(harianGroup, puskesmasMap);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            view.showError("Failed Submit Data");
+                                        }
+                                    });
+                        }
+                        else{
+                            String dusunId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            Map<String, Object> puskesmasMap = new HashMap<>();
+                            puskesmasMap.put("dusun_id", dusunId);
+                            puskesmasMap.put("nama", harianGroup.get("puskesmas"));
+                            submitGroupingPuskesmas(harianGroup, puskesmasMap);
+                        }
+                    }
+                });
+    }
+
+    public void submitGroupingPuskesmas(final Map<String, Object> harianGroup, final Map<String, Object> puskesmasGroup){
+
+        db.collection("puskesmas_grouping").whereEqualTo("dusun_id", puskesmasGroup.get("dusun_id"))
+                .whereEqualTo("nama", puskesmasGroup.get("nama")).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if(queryDocumentSnapshots.isEmpty()){
+                            db.collection("puskesmas_grouping").add(puskesmasGroup)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            view.showError("Failed Submit Data");
+                                        }
+                                    });
+                        }
                     }
                 });
     }
@@ -244,6 +437,7 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        setTotalDataPasien();
                         view.toListPatient();
                     }
                 })
@@ -260,7 +454,11 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
         User user = App.getInstance().getPrefManager().getUser();
         ArrayList<String> kabupatenList = new ArrayList<>();
         kabupatenList.add("-- Pilih Kabupaten --");
-        kabupatenList.add(user.getRegion());
+        List<String> userKabupatenList = user.getRegion();
+
+        for(int index = 0; index < userKabupatenList.size(); index++){
+            kabupatenList.add(userKabupatenList.get(index));
+        }
 
         view.constructKabupaten(kabupatenList);
     }
@@ -288,139 +486,128 @@ public class AddPasienPresenter implements AddPasienActivityInterface.Presenter 
 
     @Override
     public void getKecamatanList(String kabupaten) {
-        Date selectedDate = view.getSelectedDate();
-        Date untilDate = view.getSelectedDatePlusOne(selectedDate);
 
-        db.collection("laporan-harian-grouping").whereGreaterThan("tanggal", selectedDate).whereLessThan("tanggal", untilDate).whereEqualTo("kabupaten", kabupaten).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<HarianGroup> harianGroupList = queryDocumentSnapshots.toObjects(HarianGroup.class);
-                constructKecamatanList(harianGroupList);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                view.showError("Failed Retrieve Data");
-            }
-        });
-    }
-
-    public void constructKecamatanList(List<HarianGroup> harianGroupList) {
-        ArrayList<String> kecamatanList = new ArrayList<>();
-        kecamatanList.add("-- Pilih Kecamatan --");
-        for (int index = 0; index < harianGroupList.size(); index++) {
-            HarianGroup harianGroup = harianGroupList.get(index);
-            if (!kecamatanList.contains(harianGroup.getKecamatan())) {
-                kecamatanList.add(harianGroup.getKecamatan());
-            }
-        }
-        kecamatanList.add("-- Tambah Kecamatan --");
-        view.constructKecamatan(kecamatanList);
-    }
-
-    @Override
-    public void getDesaList(String kecamatan, String kabupaten){
-        Date selectedDate = view.getSelectedDate();
-        Date untilDate = view.getSelectedDatePlusOne(selectedDate);
-
-        db.collection("laporan-harian-grouping").whereGreaterThan("tanggal", selectedDate)
-                .whereLessThan("tanggal", untilDate).whereEqualTo("kabupaten", kabupaten)
-                .whereEqualTo("kecamatan", kecamatan).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<HarianGroup> harianGroupList = queryDocumentSnapshots.toObjects(HarianGroup.class);
-                constructDesaList(harianGroupList);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                view.showError("Failed Retrieve Data");
-            }
-        });
-    }
-
-    public void constructDesaList(List<HarianGroup> harianGroupList){
-        ArrayList<String> desaList = new ArrayList<>();
-        desaList.add("-- Pilih Desa --");
-        for(int index = 0; index<harianGroupList.size(); index++){
-            HarianGroup harianGroup = harianGroupList.get(index);
-            if(!desaList.contains(harianGroup.getDesa())){
-                desaList.add(harianGroup.getDesa());
-            }
-        }
-        desaList.add("-- Tambah Desa --");
-        view.constructDesa(desaList);
-    }
-
-    @Override
-    public void getDusunList(String desa, String kecamatan, String kabupaten){
-        Date selectedDate = view.getSelectedDate();
-        Date untilDate = view.getSelectedDatePlusOne(selectedDate);
-
-        db.collection("laporan-harian-grouping").whereGreaterThan("tanggal", selectedDate)
-                .whereLessThan("tanggal", untilDate).whereEqualTo("kabupaten", kabupaten)
-                .whereEqualTo("kecamatan", kecamatan).whereEqualTo("desa", desa)
+        db.collection("kabupaten_grouping").whereEqualTo("nama", kabupaten)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<HarianGroup> harianGroupList = queryDocumentSnapshots.toObjects(HarianGroup.class);
-                constructDusunList(harianGroupList);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                view.showError("Failed Retrieve Data");
+                db.collection("kecamatan_grouping").whereEqualTo("kabupaten_id",queryDocumentSnapshots.getDocuments().get(0).getId())
+                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<String> kecamatanList = new ArrayList<>();
+                        kecamatanList.add("-- Pilih Kecamatan --");
+                        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+
+                        for(int index = 0; index<documentSnapshots.size(); index++){
+                            kecamatanList.add(documentSnapshots.get(index).get("nama").toString());
+                        }
+                        kecamatanList.add("-- Tambah Kecamatan --");
+                        view.constructKecamatan(kecamatanList);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        view.showError("Failed Retrieve Data");
+                    }
+                });
             }
         });
-    }
-
-    public void constructDusunList(List<HarianGroup> harianGroupList){
-        ArrayList<String> dusunList = new ArrayList<>();
-        dusunList.add("-- Pilih Dusun --");
-        for(int index = 0; index<harianGroupList.size(); index++){
-            HarianGroup harianGroup = harianGroupList.get(index);
-            if(!dusunList.contains(harianGroup.getDusun())){
-                dusunList.add(harianGroup.getDusun());
-            }
-        }
-        dusunList.add("-- Tambah Dusun --");
-        view.constructDusun(dusunList);
     }
 
     @Override
-    public void getPuskesmasList(String dusun, String desa, String kecamatan, String kabupaten){
-        Date selectedDate = view.getSelectedDate();
-        Date untilDate = view.getSelectedDatePlusOne(selectedDate);
+    public void getDesaList(String kecamatan){
 
-        db.collection("laporan-harian-grouping").whereGreaterThan("tanggal", selectedDate)
-                .whereLessThan("tanggal", untilDate).whereEqualTo("kabupaten", kabupaten)
-                .whereEqualTo("kecamatan", kecamatan).whereEqualTo("desa", desa)
-                .whereEqualTo("dusun", dusun)
+        db.collection("kecamatan_grouping").whereEqualTo("nama", kecamatan)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<HarianGroup> harianGroupList = queryDocumentSnapshots.toObjects(HarianGroup.class);
-                constructPuskesmasList(harianGroupList);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                view.showError("Failed Retrieve Data");
+                db.collection("desa_grouping").whereEqualTo("kecamatan_id", queryDocumentSnapshots.getDocuments().get(0).getId())
+                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<String> desaList = new ArrayList<>();
+                        desaList.add("-- Pilih Desa --");
+                        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+
+                        for(int index = 0; index<documentSnapshots.size(); index++){
+                            desaList.add(documentSnapshots.get(index).get("nama").toString());
+                        }
+
+                        desaList.add("-- Tambah Desa --");
+                        view.constructDesa(desaList);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        view.showError("Failed Retrieve Data");
+                    }
+                });
             }
         });
     }
 
-    public void constructPuskesmasList(List<HarianGroup> harianGroupList){
-        ArrayList<String> puskesmasList = new ArrayList<>();
-        puskesmasList.add("-- Pilih Puskesmas --");
-        for(int index = 0; index<harianGroupList.size(); index++){
-            HarianGroup harianGroup = harianGroupList.get(index);
-            if(!puskesmasList.contains(harianGroup.getPuskesmas())){
-                puskesmasList.add(harianGroup.getPuskesmas());
+    @Override
+    public void getDusunList(String desa){
+
+        db.collection("desa_grouping").whereEqualTo("nama", desa)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                db.collection("dusun_grouping").whereEqualTo("desa_id", queryDocumentSnapshots.getDocuments().get(0).getId())
+                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<String> dusunList = new ArrayList<>();
+                        dusunList.add("-- Pilih Dusun --");
+                        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+
+                        for(int index = 0; index<documentSnapshots.size(); index++){
+                            dusunList.add(documentSnapshots.get(index).get("nama").toString());
+                        }
+
+                        dusunList.add("-- Tambah Dusun --");
+                        view.constructDusun(dusunList);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        view.showError("Failed Retrieve Data");
+                    }
+                });
             }
-        }
-        puskesmasList.add("-- Tambah Puskesmas --");
-        view.constructPuskesmas(puskesmasList);
+        });
+    }
+
+    @Override
+    public void getPuskesmasList(String dusun){
+
+        db.collection("dusun_grouping").whereEqualTo("nama", dusun)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                db.collection("puskesmas_grouping").whereEqualTo("dusun_id", queryDocumentSnapshots.getDocuments().get(0).getId())
+                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        ArrayList<String> puskesmasList = new ArrayList<>();
+                        puskesmasList.add("-- Pilih Puskesmas --");
+                        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+
+                        for(int index = 0; index<documentSnapshots.size(); index++){
+                            puskesmasList.add(documentSnapshots.get(index).get("nama").toString());
+                        }
+                        puskesmasList.add("-- Tambah Puskesmas --");
+                        view.constructPuskesmas(puskesmasList);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        view.showError("Failed Retrieve Data");
+                    }
+                });
+            }
+        });
     }
 
     @Override

@@ -27,9 +27,9 @@ public interface AddPasienActivityInterface {
         int[] getDate();
         void getKabupatenList();
         void getKecamatanList(String kabupaten);
-        void getDesaList(String kecamatan, String kabupaten);
-        void getDusunList(String desa, String kecamatan, String kabupaten);
-        void getPuskesmasList(String dusun, String desa, String kecamatan, String kabupaten);
+        void getDesaList(String kecamatan);
+        void getDusunList(String desa);
+        void getPuskesmasList(String dusun);
         void getGroupingList(String puskesmas, String dusun, String desa, String kecamatan, String kabupaten);
         void setPatientSelectedId(Patient patient);
         void submitImagePatient(File image, String imgName);
