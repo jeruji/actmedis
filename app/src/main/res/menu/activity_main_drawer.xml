@@ -4,18 +4,22 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/nav_pasien_search"
+            android:icon="@drawable/icon_search"
+            android:title="Search Patient" />
+        <item
             android:id="@+id/nav_pasien_list"
             android:icon="@drawable/icon_list_pasien"
-            android:title="Pasien List" />
+            android:title="List Patient" />
         <item
             android:id="@+id/nav_add_pasien"
             android:icon="@drawable/icon_add"
-            android:title="Tambah Pasien" />
+            android:title="Add Patient" />
 
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/icon_about"
-            android:title="Tentang Aplikasi" />
+            android:title="About" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/icon_logout"

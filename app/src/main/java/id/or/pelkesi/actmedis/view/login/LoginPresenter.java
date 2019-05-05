@@ -11,10 +11,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -70,16 +69,13 @@ public class LoginPresenter implements LoginActivityInterface.Presenter {
 
     public void getUserData(final String email) {
 
-        db.collection("users").whereEqualTo("email", email).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("users").document(email).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if(queryDocumentSnapshots.isEmpty()){
-                    view.submitResult(false);
-                }
-                else{
-                    List<User> userLists = queryDocumentSnapshots.toObjects(User.class);
-                    view.toDashboardPage(userLists.get(0));
-                }
+            public void onSuccess(DocumentSnapshot documentSnapshots) {
+
+                User user = documentSnapshots.toObject(User.class);
+                view.toDashboardPage(user);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

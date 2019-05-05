@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableLayout
+                android:id="@+id/tablePasienName"
+                android:layout_marginTop="100dp"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow>
+                    <LinearLayout android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/labelNama"
+                            android:textSize="@dimen/label_size"
+                            android:layout_marginLeft="30dp"
+                            android:layout_gravity="center_vertical"
+                            android:text="Nama"/>
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <EditText
+                            android:layout_toEndOf="@+id/labelNama"
+                            android:id="@+id/edTextName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                            android:layout_gravity="center_vertical"
+                            android:hint="Enter Name to Search" />
+                    </LinearLayout>
+                </TableRow>
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="#c0c0c0"/>
+            </TableLayout>
+            <Button
+                android:id="@+id/btnSubmitSearchPasien"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Search"
+                android:layout_below="@+id/tablePasienName"
+                android:layout_marginTop="@dimen/marginTopHeader"
+                android:layout_marginBottom="@dimen/marginTopHeader"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_alignParentRight="true"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_search_pasien"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="60dp"
+                android:layout_below="@+id/btnSubmitSearchPasien"
+                android:visibility="gone"
+                tools:listitem="@layout/list_row_pasien"></android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/text_no_questions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Data is empty"
+                android:textColor="@color/md_red_400"
+                android:textSize="14dp"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progress_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
+

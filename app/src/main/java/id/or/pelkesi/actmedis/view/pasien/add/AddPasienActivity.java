@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -112,6 +113,9 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
 
     @BindView(R.id.toolbar)
     Toolbar toolbarList;
+
+    @BindView(R.id.btnSubmitAddPasien)
+    Button submitAddPasien;
 
     @Inject
     AddPasienPresenter pasienPresenter;
@@ -322,16 +326,27 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
 
     @OnItemSelected(R.id.spinnerKabupatenGroupAdd)
     public void kabupatenSpinnerItemSelected(Spinner spinner, int position){
-        if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")){
+        if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")&&
+                !addGroupDateEd.getText().toString().equals("")){
             pasienPresenter.getKecamatanList(spinner.getSelectedItem().toString());
+        }
+        else if(!spinner.getSelectedItem().toString().equals("-- Pilih Kabupaten --")&&
+                addGroupDateEd.getText().toString().equals("")){
+            showError("Please Select Date");
+            spinner.setSelection(0);
         }
     }
 
     @OnItemSelected(R.id.spinnerKecamatanGroupAdd)
     public void kecamatanSpinnerItemSelected(Spinner spinner, int position){
         if(!spinner.getSelectedItem().toString().equals("-- Pilih Kecamatan --")&&!spinner.getSelectedItem().toString().equals("-- Tambah Kecamatan --")){
-            pasienPresenter.getDesaList(spinner.getSelectedItem().toString(),
-                    addKabupatenGroupSpinner.getSelectedItem().toString());
+
+            addKecamatanEd.setVisibility(View.GONE);
+            addDesaEd.setVisibility(View.GONE);
+            addDusunEd.setVisibility(View.GONE);
+            addPuskesmasEd.setVisibility(View.GONE);
+
+            pasienPresenter.getDesaList(spinner.getSelectedItem().toString());
         }
         else if(spinner.getSelectedItem().toString().equals("-- Tambah Kecamatan --")){
             addKecamatanEd.setVisibility(View.VISIBLE);
@@ -344,9 +359,12 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
     @OnItemSelected(R.id.spinnerDesaGroupAdd)
     public void desaSpinnerItemSelected(Spinner spinner, int position){
         if(!spinner.getSelectedItem().toString().equals("-- Pilih Desa --")&&!spinner.getSelectedItem().toString().equals("-- Tambah Desa --")){
-            pasienPresenter.getDusunList(spinner.getSelectedItem().toString(),
-                    addKecamatanGroupSpinner.getSelectedItem().toString(),
-                    addKabupatenGroupSpinner.getSelectedItem().toString());
+
+            addDesaEd.setVisibility(View.GONE);
+            addDusunEd.setVisibility(View.GONE);
+            addPuskesmasEd.setVisibility(View.GONE);
+
+            pasienPresenter.getDusunList(spinner.getSelectedItem().toString());
         }
         else if(spinner.getSelectedItem().toString().equals("-- Tambah Desa --")){
             addDesaEd.setVisibility(View.VISIBLE);
@@ -358,10 +376,11 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
     @OnItemSelected(R.id.spinnerDusunGroupAdd)
     public void dusunSpinnerItemSelected(Spinner spinner, int position){
         if(!spinner.getSelectedItem().toString().equals("-- Pilih Dusun --")&&!spinner.getSelectedItem().toString().equals("-- Tambah Dusun --")){
-            pasienPresenter.getPuskesmasList(spinner.getSelectedItem().toString(),
-                    addDesaGroupSpinner.getSelectedItem().toString(),
-                    addKecamatanGroupSpinner.getSelectedItem().toString(),
-                    addKabupatenGroupSpinner.getSelectedItem().toString());
+
+            addDusunEd.setVisibility(View.GONE);
+            addPuskesmasEd.setVisibility(View.GONE);
+
+            pasienPresenter.getPuskesmasList(spinner.getSelectedItem().toString());
         }
         else if(spinner.getSelectedItem().toString().equals("-- Tambah Dusun --")){
             addDusunEd.setVisibility(View.VISIBLE);
@@ -372,6 +391,9 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
     @OnItemSelected(R.id.spinnerPuskesmasGroupAdd)
     public void puskesmasSpinnerItemSelected(Spinner spinner, int position){
         if(!spinner.getSelectedItem().toString().equals("-- Pilih Puskesmas --")&&!spinner.getSelectedItem().toString().equals("-- Tambah Puskesmas --")){
+
+            addPuskesmasEd.setVisibility(View.GONE);
+
             pasienPresenter.getGroupingList(spinner.getSelectedItem().toString(),
                     addDusunGroupSpinner.getSelectedItem().toString(),
                     addDesaGroupSpinner.getSelectedItem().toString(),
@@ -423,113 +445,165 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
     @OnClick(R.id.btnSubmitAddPasien)
     public void uploadDataPasien(){
 
-        if(pasienPresenter.getPatientAndGroupId()!=null){
+        submitAddPasien.setClickable(false);
 
-            String[] patientAndGroupId = pasienPresenter.getPatientAndGroupId();
+        boolean validate = true;
 
-            if(!patientAndGroupId[0].equals("")&&!patientAndGroupId[1].equals("")){
-                Map<String, Object> detailPasien = new HashMap<>();
-                detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
-                detailPasien.put("gds", addGdsEd.getText().toString());
-                detailPasien.put("group_id", patientAndGroupId[1]);
-                detailPasien.put("keluhan", addKeluhanEd.getText().toString());
-                detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
-                detailPasien.put("rujukan", addRujukanEd.getText().toString());
-                detailPasien.put("pasien_id", patientAndGroupId[0]);
+        if(addNameAutoComplete.getText().toString().equals("")||
+                addTanggalLahirEd.getText().toString().equals("")||
+                addGroupDateEd.getText().toString().equals("")||
+                addDiagnosaEd.getText().toString().equals("")||
+                addGdsEd.getText().toString().equals("")||
+                addKeluhanEd.getText().toString().equals("")||
+                addCholesterolAdd.getText().toString().equals("")||
+                addRujukanEd.getText().toString().equals("")||
+                addSuhuEd.getText().toString().equals("")||
+                addTBBBEd.getText().toString().equals("")||
+                addTekananDarahEd.getText().toString().equals("")||
+                addTindakanEd.getText().toString().equals("")||
+                addUricAcidEd.getText().toString().equals("")
+                ){
+            validate = false;
+        }
 
-                if(addStatusSpinner.getSelectedItemPosition()==0)
-                    detailPasien.put("status_penyakit", "Menular");
-                else
-                    detailPasien.put("status_penyakit", "Tidak Menular");
+        if(validate) {
 
-                detailPasien.put("suhu", addSuhuEd.getText().toString());
-                detailPasien.put("tb_bb", addTBBBEd.getText().toString());
-                detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
-                detailPasien.put("tindakan", addTindakanEd.getText().toString());
-                detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
+            if (pasienPresenter.getPatientAndGroupId() != null) {
 
-                pasienPresenter.submitPatientData(detailPasien);
-            }
-            else if(!patientAndGroupId[0].equals("")&&patientAndGroupId[1].equals("")){
-                Map<String, Object> detailPasien = new HashMap<>();
-                detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
-                detailPasien.put("gds", addGdsEd.getText().toString());
-                detailPasien.put("keluhan", addKeluhanEd.getText().toString());
-                detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
-                detailPasien.put("rujukan", addRujukanEd.getText().toString());
-                detailPasien.put("pasien_id", patientAndGroupId[0]);
+                String[] patientAndGroupId = pasienPresenter.getPatientAndGroupId();
 
-                if(addStatusSpinner.getSelectedItemPosition()==0)
-                    detailPasien.put("status_penyakit", "Menular");
-                else
-                    detailPasien.put("status_penyakit", "Tidak Menular");
+                if (!patientAndGroupId[0].equals("") && !patientAndGroupId[1].equals("")) {
+                    Map<String, Object> detailPasien = new HashMap<>();
+                    detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
+                    detailPasien.put("gds", addGdsEd.getText().toString());
+                    detailPasien.put("group_id", patientAndGroupId[1]);
+                    detailPasien.put("keluhan", addKeluhanEd.getText().toString());
+                    detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
+                    detailPasien.put("rujukan", addRujukanEd.getText().toString());
+                    detailPasien.put("pasien_id", patientAndGroupId[0]);
 
-                detailPasien.put("suhu", addSuhuEd.getText().toString());
-                detailPasien.put("tb_bb", addTBBBEd.getText().toString());
-                detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
-                detailPasien.put("tindakan", addTindakanEd.getText().toString());
-                detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
+                    if (addStatusSpinner.getSelectedItemPosition() == 0)
+                        detailPasien.put("status_penyakit", "Menular");
+                    else
+                        detailPasien.put("status_penyakit", "Tidak Menular");
 
-                String harianDateString = addGroupDateEd.getText().toString();
-                Date harianDate = null;
-                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                    detailPasien.put("suhu", addSuhuEd.getText().toString());
+                    detailPasien.put("tb_bb", addTBBBEd.getText().toString());
+                    detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
+                    detailPasien.put("tindakan", addTindakanEd.getText().toString());
+                    detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
 
-                try {
-                    harianDate = format.parse(harianDateString);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    pasienPresenter.submitPatientData(detailPasien);
+                } else if (!patientAndGroupId[0].equals("") && patientAndGroupId[1].equals("")) {
+                    Map<String, Object> detailPasien = new HashMap<>();
+                    detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
+                    detailPasien.put("gds", addGdsEd.getText().toString());
+                    detailPasien.put("keluhan", addKeluhanEd.getText().toString());
+                    detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
+                    detailPasien.put("rujukan", addRujukanEd.getText().toString());
+                    detailPasien.put("pasien_id", patientAndGroupId[0]);
+
+                    if (addStatusSpinner.getSelectedItemPosition() == 0)
+                        detailPasien.put("status_penyakit", "Menular");
+                    else
+                        detailPasien.put("status_penyakit", "Tidak Menular");
+
+                    detailPasien.put("suhu", addSuhuEd.getText().toString());
+                    detailPasien.put("tb_bb", addTBBBEd.getText().toString());
+                    detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
+                    detailPasien.put("tindakan", addTindakanEd.getText().toString());
+                    detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
+
+                    String harianDateString = addGroupDateEd.getText().toString();
+                    Date harianDate = null;
+                    DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+
+                    try {
+                        harianDate = format.parse(harianDateString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    Map<String, Object> harianGroup = new HashMap<>();
+                    harianGroup.put("tanggal", harianDate);
+                    harianGroup.put("kabupaten", addKabupatenGroupSpinner.getSelectedItem().toString());
+                    if (addKecamatanEd.getText().toString().equals(""))
+                        harianGroup.put("kecamatan", addKecamatanGroupSpinner.getSelectedItem().toString());
+                    else
+                        harianGroup.put("kecamatan", addKecamatanEd.getText().toString());
+
+                    if (addDesaEd.getText().toString().equals(""))
+                        harianGroup.put("desa", addDesaGroupSpinner.getSelectedItem().toString());
+                    else
+                        harianGroup.put("desa", addDesaEd.getText().toString());
+
+                    if (addDusunEd.getText().toString().equals(""))
+                        harianGroup.put("dusun", addDusunGroupSpinner.getSelectedItem().toString());
+                    else
+                        harianGroup.put("dusun", addDusunEd.getText().toString());
+
+                    if (addPuskesmasEd.getText().toString().equals(""))
+                        harianGroup.put("puskesmas", addPuskesmasGroupSpinner.getSelectedItem().toString());
+                    else
+                        harianGroup.put("puskesmas", addPuskesmasEd.getText().toString());
+
+                    if (!harianGroup.get("kecamatan").equals("")&&!harianGroup.get("desa").equals("")&&!harianGroup.get("dusun").equals("")&&
+                            !harianGroup.get("puskesmas").equals(""))
+                        pasienPresenter.submitPatientData(detailPasien, harianGroup);
+                    else
+                        showError("Please Check Your Data Before Submit");
+
+                } else if (patientAndGroupId[0].equals("") && !patientAndGroupId[1].equals("")) {
+                    Map<String, Object> detailPasien = new HashMap<>();
+                    detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
+                    detailPasien.put("gds", addGdsEd.getText().toString());
+                    detailPasien.put("keluhan", addKeluhanEd.getText().toString());
+                    detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
+                    detailPasien.put("rujukan", addRujukanEd.getText().toString());
+                    detailPasien.put("group_id", patientAndGroupId[1]);
+
+                    if (addStatusSpinner.getSelectedItemPosition() == 0)
+                        detailPasien.put("status_penyakit", "Menular");
+                    else
+                        detailPasien.put("status_penyakit", "Tidak Menular");
+
+                    detailPasien.put("suhu", addSuhuEd.getText().toString());
+                    detailPasien.put("tb_bb", addTBBBEd.getText().toString());
+                    detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
+                    detailPasien.put("tindakan", addTindakanEd.getText().toString());
+                    detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
+
+                    Map<String, Object> patient = new HashMap<>();
+                    patient.put("nama", addNameAutoComplete.getText().toString());
+                    patient.put("tanggal_lahir", addTanggalLahirEd.getText().toString());
+
+                    if (addGenderSpinner.getSelectedItemPosition() == 0)
+                        patient.put("gender", "Laki-Laki");
+                    else
+                        patient.put("gender", "Perempuan");
+
+                    patient.put("datecreated", new Date());
+
+                    String birthDateString = addTanggalLahirEd.getText().toString();
+                    DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                    Date birthDate = null;
+
+                    try {
+                        birthDate = format.parse(birthDateString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    patient.put("umur", getAge(birthDate));
+
+                    pasienPresenter.submitPatientDataByGroup(detailPasien, patient);
                 }
-
-                Map<String, Object> harianGroup = new HashMap<>();
-                harianGroup.put("tanggal", harianDate);
-                harianGroup.put("kabupaten", addKabupatenGroupSpinner.getSelectedItem().toString());
-                if(addKecamatanEd.getText().toString().equals(""))
-                    harianGroup.put("kecamatan", addKecamatanGroupSpinner.getSelectedItem().toString());
-                else
-                    harianGroup.put("kecamatan", addKecamatanEd.getText().toString());
-
-                if(addDesaEd.getText().toString().equals(""))
-                    harianGroup.put("desa", addDesaGroupSpinner.getSelectedItem().toString());
-                else
-                    harianGroup.put("desa", addDesaEd.getText().toString());
-
-                if(addDusunEd.getText().toString().equals(""))
-                    harianGroup.put("dusun", addDusunGroupSpinner.getSelectedItem().toString());
-                else
-                    harianGroup.put("dusun", addDusunEd.getText().toString());
-
-                if(addPuskesmasEd.getText().toString().equals(""))
-                    harianGroup.put("puskesmas", addPuskesmasGroupSpinner.getSelectedItem().toString());
-                else
-                    harianGroup.put("puskesmas", addPuskesmasEd.getText().toString());
-
-                pasienPresenter.submitPatientData(detailPasien, harianGroup);
-            }
-            else if(patientAndGroupId[0].equals("")&&!patientAndGroupId[1].equals("")){
-                Map<String, Object> detailPasien = new HashMap<>();
-                detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
-                detailPasien.put("gds", addGdsEd.getText().toString());
-                detailPasien.put("keluhan", addKeluhanEd.getText().toString());
-                detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
-                detailPasien.put("rujukan", addRujukanEd.getText().toString());
-                detailPasien.put("group_id", patientAndGroupId[1]);
-
-                if(addStatusSpinner.getSelectedItemPosition()==0)
-                    detailPasien.put("status_penyakit", "Menular");
-                else
-                    detailPasien.put("status_penyakit", "Tidak Menular");
-
-                detailPasien.put("suhu", addSuhuEd.getText().toString());
-                detailPasien.put("tb_bb", addTBBBEd.getText().toString());
-                detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
-                detailPasien.put("tindakan", addTindakanEd.getText().toString());
-                detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
-
+            } else {
                 Map<String, Object> patient = new HashMap<>();
                 patient.put("nama", addNameAutoComplete.getText().toString());
                 patient.put("tanggal_lahir", addTanggalLahirEd.getText().toString());
 
-                if(addGenderSpinner.getSelectedItemPosition()==0)
+                if (addGenderSpinner.getSelectedItemPosition() == 0)
                     patient.put("gender", "Laki-Laki");
                 else
                     patient.put("gender", "Perempuan");
@@ -548,85 +622,65 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
 
                 patient.put("umur", getAge(birthDate));
 
-                pasienPresenter.submitPatientDataByGroup(detailPasien, patient);
+                String harianDateString = addGroupDateEd.getText().toString();
+                Date harianDate = null;
+
+                try {
+                    harianDate = format.parse(harianDateString);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                Map<String, Object> harianGroup = new HashMap<>();
+                harianGroup.put("tanggal", harianDate);
+                harianGroup.put("kabupaten", addKabupatenGroupSpinner.getSelectedItem().toString());
+                if (addKecamatanEd.getText().toString().equals(""))
+                    harianGroup.put("kecamatan", addKecamatanGroupSpinner.getSelectedItem().toString());
+                else
+                    harianGroup.put("kecamatan", addKecamatanEd.getText().toString());
+
+                if (addDesaEd.getText().toString().equals(""))
+                    harianGroup.put("desa", addDesaGroupSpinner.getSelectedItem().toString());
+                else
+                    harianGroup.put("desa", addDesaEd.getText().toString());
+
+                if (addDusunEd.getText().toString().equals(""))
+                    harianGroup.put("dusun", addDusunGroupSpinner.getSelectedItem().toString());
+                else
+                    harianGroup.put("dusun", addDusunEd.getText().toString());
+
+                if (addPuskesmasEd.getText().toString().equals(""))
+                    harianGroup.put("puskesmas", addPuskesmasGroupSpinner.getSelectedItem().toString());
+                else
+                    harianGroup.put("puskesmas", addPuskesmasEd.getText().toString());
+
+                Map<String, Object> detailPasien = new HashMap<>();
+                detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
+                detailPasien.put("gds", addGdsEd.getText().toString());
+                detailPasien.put("keluhan", addKeluhanEd.getText().toString());
+                detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
+                detailPasien.put("rujukan", addRujukanEd.getText().toString());
+
+                if (addStatusSpinner.getSelectedItemPosition() == 0)
+                    detailPasien.put("status_penyakit", "Menular");
+                else
+                    detailPasien.put("status_penyakit", "Tidak Menular");
+
+                detailPasien.put("suhu", addSuhuEd.getText().toString());
+                detailPasien.put("tb_bb", addTBBBEd.getText().toString());
+                detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
+                detailPasien.put("tindakan", addTindakanEd.getText().toString());
+                detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
+
+                if (!harianGroup.get("kecamatan").equals("")&&!harianGroup.get("desa").equals("")&&!harianGroup.get("dusun").equals("")&&
+                        !harianGroup.get("puskesmas").equals(""))
+                    pasienPresenter.submitPatientData(detailPasien, harianGroup, patient);
+                else
+                    showError("Please Check Your Data Before Submit");
             }
         }
-
         else{
-            Map<String, Object> patient = new HashMap<>();
-            patient.put("nama", addNameAutoComplete.getText().toString());
-            patient.put("tanggal_lahir", addTanggalLahirEd.getText().toString());
-
-            if(addGenderSpinner.getSelectedItemPosition()==0)
-                patient.put("gender", "Laki-Laki");
-            else
-                patient.put("gender", "Perempuan");
-
-            patient.put("datecreated", new Date());
-
-            String birthDateString = addTanggalLahirEd.getText().toString();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            Date birthDate = null;
-
-            try {
-                birthDate = format.parse(birthDateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            patient.put("umur", getAge(birthDate));
-
-            String harianDateString = addGroupDateEd.getText().toString();
-            Date harianDate = null;
-
-            try {
-                harianDate = format.parse(harianDateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            Map<String, Object> harianGroup = new HashMap<>();
-            harianGroup.put("tanggal", harianDate);
-            harianGroup.put("kabupaten", addKabupatenGroupSpinner.getSelectedItem().toString());
-            if(addKecamatanEd.getText().toString().equals(""))
-                harianGroup.put("kecamatan", addKecamatanGroupSpinner.getSelectedItem().toString());
-            else
-                harianGroup.put("kecamatan", addKecamatanEd.getText().toString());
-
-            if(addDesaEd.getText().toString().equals(""))
-                harianGroup.put("desa", addDesaGroupSpinner.getSelectedItem().toString());
-            else
-                harianGroup.put("desa", addDesaEd.getText().toString());
-
-            if(addDusunEd.getText().toString().equals(""))
-                harianGroup.put("dusun", addDusunGroupSpinner.getSelectedItem().toString());
-            else
-                harianGroup.put("dusun", addDusunEd.getText().toString());
-
-            if(addPuskesmasEd.getText().toString().equals(""))
-                harianGroup.put("puskesmas", addPuskesmasGroupSpinner.getSelectedItem().toString());
-            else
-                harianGroup.put("puskesmas", addPuskesmasEd.getText().toString());
-
-            Map<String, Object> detailPasien = new HashMap<>();
-            detailPasien.put("diagnosa", addDiagnosaEd.getText().toString());
-            detailPasien.put("gds", addGdsEd.getText().toString());
-            detailPasien.put("keluhan", addKeluhanEd.getText().toString());
-            detailPasien.put("kolesterol", addCholesterolAdd.getText().toString());
-            detailPasien.put("rujukan", addRujukanEd.getText().toString());
-
-            if(addStatusSpinner.getSelectedItemPosition()==0)
-                detailPasien.put("status_penyakit", "Menular");
-            else
-                detailPasien.put("status_penyakit", "Tidak Menular");
-
-            detailPasien.put("suhu", addSuhuEd.getText().toString());
-            detailPasien.put("tb_bb", addTBBBEd.getText().toString());
-            detailPasien.put("tekanan_darah", addTekananDarahEd.getText().toString());
-            detailPasien.put("tindakan", addTindakanEd.getText().toString());
-            detailPasien.put("uric_acid", addUricAcidEd.getText().toString());
-
-            pasienPresenter.submitPatientData(detailPasien, harianGroup, patient);
+            showError("Please Check Your Data Before Submit");
         }
     }
 
@@ -639,7 +693,7 @@ public class AddPasienActivity extends AppCompatActivity implements AddPasienAct
 
         birthDate.setTime(dateOfBirth);
         if (birthDate.after(today)) {
-            throw new IllegalArgumentException("Can't be born in the future");
+            showError("Can't be born in the future");
         }
 
         age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);

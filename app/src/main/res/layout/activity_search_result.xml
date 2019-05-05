@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <include layout="@layout/toolbar"/>
+        <TableLayout
+            android:id="@+id/tableSearchResult"
+            android:layout_marginTop="70dp"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <LinearLayout android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imageSearchPasien"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginBottom="20dp"
+                        />
+                </LinearLayout>
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="#c0c0c0"/>
+            <TableRow>
+                <LinearLayout android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/labelSearchName"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/md_grey_400"
+                        android:text="Nama"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:textColor="@color/md_grey_700"
+                        android:textSize="17sp"
+                        android:padding="5dp"
+                        android:background="@null"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edSearchName"
+                        />
+                </LinearLayout>
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="#c0c0c0"/>
+            <TableRow>
+                <LinearLayout android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/labelSearchTanggalLahir"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/md_grey_400"
+                        android:text="Tanggal Lahir"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:layout_toEndOf="@+id/labelSearchTanggalLahir"
+                        android:id="@+id/edSearchTanggalLahir"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_gravity="center_vertical"
+                        android:hint="" />
+                </LinearLayout>
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="#c0c0c0"/>
+            <TableRow>
+                <LinearLayout android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/labelSearchGender"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/md_grey_400"
+                        android:text="Gender"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <Spinner
+                        android:id="@+id/spinnerSearchGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:entries="@array/gender"
+                        android:prompt="@string/gender_prompt"
+                        />
+                </LinearLayout>
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="#c0c0c0"/>
+            <TableRow>
+                <LinearLayout android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/labelSearchUmur"
+                        android:layout_marginLeft="30dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/md_grey_400"
+                        android:text="Umur"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:textColor="@color/md_grey_700"
+                        android:textSize="17sp"
+                        android:padding="5dp"
+                        android:background="@null"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edSearchUmur"
+                        />
+                </LinearLayout>
+            </TableRow>
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="#c0c0c0"/>
+
+        </TableLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_detail_pasien"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="60dp"
+            android:layout_below="@+id/tableSearchResult"
+            android:visibility="gone"
+            tools:listitem="@layout/list_row_detail_pasien"></android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+</ScrollView>

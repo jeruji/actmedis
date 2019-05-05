@@ -8,6 +8,7 @@ public interface DashboardActivityInterface {
         void toLoginPage();
         void toAboutPage();
         void showProfile();
+        void toSearchPage();
     }
 
     interface Presenter{

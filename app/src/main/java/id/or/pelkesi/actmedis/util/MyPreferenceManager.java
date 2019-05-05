@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.util.Arrays;
+import java.util.List;
+
 import id.or.pelkesi.actmedis.model.User;
 
 public class MyPreferenceManager {
@@ -33,7 +36,16 @@ public class MyPreferenceManager {
         editor.putString(KEY_USER_ID, user.getUser_id());
         editor.putString(KEY_NAME, user.getName());
         editor.putString(KEY_EMAIL, user.getEmail());
-        editor.putString(KEY_REGION, user.getRegion());
+
+        StringBuilder regionArr = new StringBuilder();
+        for (int index = 0; index < user.getRegion().size(); index++) {
+            if(index != user.getRegion().size()-1)
+                regionArr.append(user.getRegion().get(index)).append(",");
+            else
+                regionArr.append(user.getRegion().get(index));
+        }
+
+        editor.putString(KEY_REGION, regionArr.toString());
         editor.commit();
 
         Log.e(TAG, "User is stored in shared preferences. user id : " + user.getUser_id() + " , " + user.getName() + ", " + user.getEmail() + " , " + getFirebaseToken());
@@ -53,7 +65,10 @@ public class MyPreferenceManager {
             user.setUser_id(id);
             user.setName(name);
             user.setEmail(email);
-            user.setRegion(region);
+
+            List<String> regionArr = Arrays.asList(region.split(","));
+
+            user.setRegion(regionArr);
 
             return user;
         }

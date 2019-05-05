@@ -46,17 +46,8 @@ public class PasienAdapter extends RecyclerView.Adapter<PasienAdapter.PasienHold
         holder.pasienNama.setText(patient.getNama());
         holder.pasienGender.setText(patient.getGender());
         holder.pasienUmur.setText(patient.getUmur().toString());
-        holder.pasienSuhu.setText(patient.getSuhu());
-        holder.pasienTekananDarah.setText(patient.getTekanan_darah());
-        holder.pasienTbbb.setText(patient.getTb_bb());
-        holder.pasienKeluhan.setText(patient.getKeluhan());
-        holder.pasienDiagnosa.setText(patient.getDiagnosa());
-        holder.pasienStatus.setText(patient.getStatus_penyakit());
-        holder.pasienTindakan.setText(patient.getTindakan());
-        holder.pasienGds.setText(patient.getGds());
-        holder.pasienUricAcid.setText(patient.getUric_acid());
-        holder.pasienCholesterol.setText(patient.getKolesterol());
-        holder.pasienRujukan.setText(patient.getRujukan());
+        holder.pasienTanggalLahir.setText(patient.getTanggal_lahir());
+        holder.pasienDateCreated.setText(patient.getDatecreated().toString());
     }
 
     public void setCallback(PasienAdapterCallback callback) {
@@ -76,28 +67,10 @@ public class PasienAdapter extends RecyclerView.Adapter<PasienAdapter.PasienHold
         TextView pasienGender;
         @BindView(R.id.umurPasien)
         TextView pasienUmur;
-        @BindView(R.id.suhuPasien)
-        TextView pasienSuhu;
-        @BindView(R.id.tekananDarahPasien)
-        TextView pasienTekananDarah;
-        @BindView(R.id.tbbbPasien)
-        TextView pasienTbbb;
-        @BindView(R.id.keluhanPasien)
-        TextView pasienKeluhan;
-        @BindView(R.id.diagnosaPasien)
-        TextView pasienDiagnosa;
-        @BindView(R.id.statusPasien)
-        TextView pasienStatus;
-        @BindView(R.id.tindakanPasien)
-        TextView pasienTindakan;
-        @BindView(R.id.gdsPasien)
-        TextView pasienGds;
-        @BindView(R.id.uricAcidPasien)
-        TextView pasienUricAcid;
-        @BindView(R.id.cholesterolPasien)
-        TextView pasienCholesterol;
-        @BindView(R.id.rujukanPasien)
-        TextView pasienRujukan;
+        @BindView(R.id.tanggalLahirPasien)
+        TextView pasienTanggalLahir;
+        @BindView(R.id.dateCreatedPasien)
+        TextView pasienDateCreated;
 
         PasienAndDetail patient;
 
